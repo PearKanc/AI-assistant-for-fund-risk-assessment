@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual Env
+.venv/
+venv/
+
+# Secrets
+.env
+secrets.toml
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Mac
+.DS_Store

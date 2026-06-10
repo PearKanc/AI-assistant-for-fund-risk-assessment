@@ -1,0 +1,27 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"      # REST API
+      - "6334:6334"      # gRPC
+    volumes:
+      - qdrant_storage:/qdrant/storage   # เก็บ vector แบบถาวร
+
+  app:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - QDRANT_URL=http://qdrant:6333          # ให้ RAG ต่อ Qdrant container
+      - MARKET_PROVIDER=simulated              # เปลี่ยนเป็น yfinance เพื่อใช้ราคาจริง
+      - LLM_PLATFORM=${LLM_PLATFORM:-anthropic} # anthropic | foundry (Azure)
+      # ใช้ Anthropic API ตรง:
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      # ใช้ Claude ผ่าน Microsoft Foundry (Azure) แทน:
+      - ANTHROPIC_FOUNDRY_API_KEY=${ANTHROPIC_FOUNDRY_API_KEY:-}
+      - ANTHROPIC_FOUNDRY_RESOURCE=${ANTHROPIC_FOUNDRY_RESOURCE:-}
+    depends_on:
+      - qdrant
+
+volumes:
+  qdrant_storage:
